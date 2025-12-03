@@ -117,8 +117,8 @@ def main():
         description="HTMLファイルからスライド内の画像を抽出し、連番ファイルとして保存します。",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("--input-file", "-i", type=Path, required=True, help="画像抽出の対象となるHTMLファイルのパス。")
-    parser.add_argument("--output-dir", "-o", type=Path, required=True, help="抽出した画像ファイルを保存するディレクトリのパス。")
+    parser.add_argument("-i", "--input-file", type=Path, required=True, help="画像抽出の対象となるHTMLファイルのパス。")
+    parser.add_argument("-o", "--output-dir", type=Path, required=True, help="抽出した画像ファイルを保存するディレクトリのパス。")
     args = parser.parse_args()
 
     extract_images(args.input_file, args.output_dir)

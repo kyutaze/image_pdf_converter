@@ -65,8 +65,8 @@ def main():
         description="Create a PDF from images.",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("--input-dir", "-i", type=Path, required=True, help="Directory containing the image files.")
-    parser.add_argument("--output-dir", "-o", type=Path, required=True, help="Directory to save the output PDF file.")
+    parser.add_argument("-i", "--input-dir", type=Path, required=True, help="Directory containing the image files.")
+    parser.add_argument("-o", "--output-dir", type=Path, required=True, help="Directory to save the output PDF file.")
     args = parser.parse_args()
 
     output_pdf_name = "output.pdf"
