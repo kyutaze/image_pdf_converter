@@ -19,6 +19,10 @@ def extract_images(html_file_path: Path, output_dir: Path):
         html_file_path (Path): 入力HTMLファイルのパス。
         output_dir (Path): 画像を保存するディレクトリのパス。
     """
+    logger.info("スクリプトを開始します。")
+    logger.info(f"HTMLファイルパス: {html_file_path}")
+    logger.info(f"出力ディレクトリ: {output_dir}")
+
     # --- 出力ディレクトリの作成 ---
     logging.info(f"出力ディレクトリを確認・作成します: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
