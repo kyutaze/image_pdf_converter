@@ -9,6 +9,12 @@ import argparse
 from pathlib import Path
 from PIL import Image  # pillow
 
+# log settings
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S"
+)
 logger = logging.getLogger(__name__)
 
 def create_pdf_from_images(image_folder: Path, output_pdf_path: Path):
@@ -59,8 +65,6 @@ def create_pdf_from_images(image_folder: Path, output_pdf_path: Path):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
-
     parser = argparse.ArgumentParser(
         description="Create a PDF from images.",
         formatter_class=argparse.RawTextHelpFormatter

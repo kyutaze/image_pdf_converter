@@ -9,6 +9,12 @@ import logging
 from pathlib import Path
 import fitz  # PyMuPDF
 
+# ログ設定
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%H:%M:%S"
+)
 logger = logging.getLogger(__name__)
 
 def extract_images(pdf_file_path: Path, output_dir: Path):
@@ -74,17 +80,17 @@ def main():
     """
     コマンドライン引数を処理し、画像抽出処理を実行する。
     """
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%H:%M:%S")
 
     parser = argparse.ArgumentParser(
         description="PDFファイルから画像を抽出し、連番ファイルとして保存します。",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("-i", "--input-file", type=Path, required=True, help="画像抽出の対象となるPDFファイルのパス。")
-    parser.add_argument("-o", "--output-dir", type=Path, required=True, help="抽出した画像ファイルを保存するディレクトリのパス。")
+    parser.add_argument("-i", "--input-pdf", type=Path, required=True, help="画像抽出の対象となるPDFファイルのパス。")
     args = parser.parse_args()
     
-    extract_images(args.input_file, args.output_dir)
+    # 入力PDFファイルのあるディレクトリに、PDFのファイル名（拡張子なし）のディレクトリを作成する
+    output_dir = args.input_pdf.parent / args.input_pdf.stem
+    extract_images(args.input_pdf, output_dir)
 
 if __name__ == "__main__":
     main()
