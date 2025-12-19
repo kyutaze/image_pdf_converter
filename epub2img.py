@@ -29,7 +29,7 @@ def parse_args():
     コマンドライン引数を解析する。
     """
     parser = argparse.ArgumentParser(
-        description="EPUBファイルから画像を抽出し、連番で保存するスクリプト",
+        description="EPUBファイル（固定レイアウト）から画像を抽出し、連番で保存するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
         )
     parser.add_argument("-i", "--input-epub", required=True, type=Path, help="入力EPUBファイルのパス")
