@@ -70,11 +70,15 @@ def main():
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("-i", "--input-dir", type=Path, required=True, help="Directory containing the image files.")
-    parser.add_argument("-o", "--output-dir", type=Path, required=True, help="Directory to save the output PDF file.")
     args = parser.parse_args()
 
-    output_pdf_name = "output.pdf"
-    output_pdf_path = args.output_dir / output_pdf_name
+    # Determine output path based on input directory
+    # Output directory is the parent of the input directory
+    # Filename is the directory name + .pdf
+    input_dir = args.input_dir.resolve()
+    output_dir = input_dir.parent
+    output_pdf_name = f"{input_dir.name}.pdf"
+    output_pdf_path = output_dir / output_pdf_name
 
     create_pdf_from_images(args.input_dir, output_pdf_path)
 
