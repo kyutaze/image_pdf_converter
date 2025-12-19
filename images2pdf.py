@@ -1,13 +1,14 @@
-""""
+"""
 This python script creates a PDF from images.
 
 dependencies:
-    uv add pillow
+    uv add img2pdf
 """
 import logging
 import argparse
+import sys
 from pathlib import Path
-from PIL import Image  # pillow
+import img2pdf
 
 # log settings
 logging.basicConfig(
@@ -17,12 +18,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-def create_pdf_from_images(image_folder: Path, output_pdf_path: Path):
-    image_files = []
+def create_pdf_from_images(image_folder: Path, output_pdf_path: Path, dpi: int = 72):
     if not image_folder.is_dir():
         logger.error(f"Input directory not found: {image_folder}")
         return
 
+    # Gather all JPG/JPEG files
+    image_files = []
     for filepath in image_folder.iterdir():
         if filepath.is_file() and filepath.suffix.lower() in (".jpg", ".jpeg"):
             image_files.append(filepath)
@@ -34,21 +36,6 @@ def create_pdf_from_images(image_folder: Path, output_pdf_path: Path):
         logger.warning(f"No JPEG images found in {image_folder}")
         return
 
-    images = []
-    for img_path in image_files:
-        try:
-            img = Image.open(img_path)
-            # Convert to RGB if not already, as some images might be RGBA or P
-            if img.mode != "RGB":
-                img = img.convert("RGB")
-            images.append(img)
-        except Exception as e:
-            logger.error(f"Error processing {img_path}: {e}")
-
-    if not images:
-        logger.warning("No images were successfully processed.")
-        return
-
     # Ensure the output directory exists
     try:
         output_pdf_path.parent.mkdir(parents=True, exist_ok=True)
@@ -56,20 +43,29 @@ def create_pdf_from_images(image_folder: Path, output_pdf_path: Path):
         logger.error(f"Error creating output directory {output_pdf_path.parent}: {e}")
         return
 
-    # Save the first image, appending the rest
+    # Convert images to PDF
+    logger.info(f"Converting {len(image_files)} images to PDF using DPI={dpi}...")
     try:
-        images[0].save(output_pdf_path, save_all=True, append_images=images[1:])
+        # img2pdf.convert expects a list of filenames (strings) or binary data
+        # layout_fun is used to force a specific DPI, ignoring the image's internal DPI
+        layout_function = img2pdf.get_fixed_dpi_layout_fun((dpi, dpi))
+        pdf_bytes = img2pdf.convert([str(p) for p in image_files], layout_fun=layout_function)
+        
+        with open(output_pdf_path, "wb") as f:
+            f.write(pdf_bytes)
+            
         logger.info(f"Successfully created PDF: {output_pdf_path}")
     except Exception as e:
-        logger.error(f"Error saving PDF to {output_pdf_path}: {e}")
+        logger.error(f"Error creating PDF: {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Create a PDF from images.",
+        description="Create a PDF from images (lossless).",
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("-i", "--input-dir", type=Path, required=True, help="Directory containing the image files.")
+    parser.add_argument("--dpi", type=int, default=72, help="DPI to use for the PDF (default: 72).")
     args = parser.parse_args()
 
     # Determine output path based on input directory
@@ -80,7 +76,7 @@ def main():
     output_pdf_name = f"{input_dir.name}.pdf"
     output_pdf_path = output_dir / output_pdf_name
 
-    create_pdf_from_images(args.input_dir, output_pdf_path)
+    create_pdf_from_images(args.input_dir, output_pdf_path, dpi=args.dpi)
 
 if __name__ == "__main__":
     main()
