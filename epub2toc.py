@@ -44,7 +44,7 @@ def parse_container(zip_ref):
     return None
 
 
-def parse_opf(zip_ref, opf_path):
+def parse_opf(zip_ref, opf_path, skip_cover=False):
     """
     OPFファイルを解析して、以下の情報を取得する。
     1. idref -> 連番 のマッピング (ログ出力用)
@@ -84,7 +84,13 @@ def parse_opf(zip_ref, opf_path):
             spine = root.find(f"{ns}spine")
             if spine is not None:
                 seq = 1
-                for itemref in spine.findall(f"{ns}itemref"):
+                itemrefs = spine.findall(f"{ns}itemref")
+                
+                # skip_coverが指定されている場合は1つ目をスキップ
+                start_index = 1 if skip_cover and len(itemrefs) > 0 else 0
+                
+                for i in range(start_index, len(itemrefs)):
+                    itemref = itemrefs[i]
                     idref = itemref.get("idref")
                     id_to_seq[idref] = seq
                     
@@ -152,8 +158,12 @@ def parse_ncx(zip_ref, ncx_path, href_to_seq):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="EPUBファイルから目次を抽出してCSVに出力します。")
+    parser = argparse.ArgumentParser(
+        description="EPUBファイルから目次を抽出してCSVに出力するスクリプト",
+        formatter_class=argparse.RawTextHelpFormatter
+        )
     parser.add_argument("--input-epub", required=True, help="目次抽出の対象となるEPUBファイルのパス")
+    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする")
     args = parser.parse_args()
 
     input_epub_path = Path(args.input_epub)
@@ -173,7 +183,7 @@ def main():
             logger.info(f"OPFファイル: {opf_path}")
 
             # 2. OPF解析 (idref->seq, href->seq, ncx_path)
-            id_to_seq, href_to_seq, ncx_path = parse_opf(zip_ref, opf_path)
+            id_to_seq, href_to_seq, ncx_path = parse_opf(zip_ref, opf_path, args.skip_cover)
             
             if not ncx_path:
                 logger.error("NCXファイル(目次)が見つかりませんでした。処理を中断します。")

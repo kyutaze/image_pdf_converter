@@ -32,7 +32,8 @@ def parse_args():
         description="EPUBファイル（固定レイアウト）から画像を抽出し、連番で保存するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
         )
-    parser.add_argument("-i", "--input-epub", required=True, type=Path, help="入力EPUBファイルのパス")
+    parser.add_argument("-i", "--input-epub", required=True, type=Path, help="画像抽出の対象となるEPUBファイルのパス")
+    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする")
     return parser.parse_args()
 
 
@@ -52,7 +53,7 @@ def get_opf_path(zip_ref):
         raise
 
 
-def extract_images(epub_path, output_dir):
+def extract_images(epub_path, output_dir, skip_cover=False):
     """
     EPUBから画像を抽出し、指定ディレクトリに保存する。
     """
@@ -79,7 +80,13 @@ def extract_images(epub_path, output_dir):
             for itemref in opf_root.findall(".//opf:spine/opf:itemref", NS):
                 spine_items.append(itemref.attrib["idref"])
 
-            logger.info(f"総ページ数: {len(spine_items)}")
+            logger.info(f"総ページ数（スキップ前）: {len(spine_items)}")
+
+            if skip_cover and len(spine_items) > 0:
+                logger.info("表紙（1ページ目）をスキップします。")
+                spine_items = spine_items[1:]
+
+            logger.info(f"処理対象ページ数: {len(spine_items)}")
 
             # 各ページ(XHTML)から画像を抽出
             opf_dir = Path(opf_path_str).parent
@@ -162,7 +169,7 @@ def main():
     args = parse_args()
     # 入力EPUBファイルのあるディレクトリに、EPUBのファイル名（拡張子なし）のディレクトリを作成する
     output_dir = args.input_epub.parent / args.input_epub.stem
-    extract_images(args.input_epub, output_dir)
+    extract_images(args.input_epub, output_dir, args.skip_cover)
 
 
 if __name__ == "__main__":
