@@ -1,5 +1,5 @@
 """"
-This python script extracts images from an inner HTML of Impress Web Book Viewer.
+Impress Web Book Viewer の inner HTML から画像を抽出し、連番で保存するスクリプト
 """
 import logging
 import argparse
@@ -123,7 +123,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
-        description="HTMLファイルからスライド内の画像を抽出し、連番ファイルとして保存します。",
+        description="Impress Web Book Viewer の inner HTML から画像を抽出し、連番で保存するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("-i", "--input-html", type=Path, required=True, help="画像抽出の対象となるHTMLファイルのパス。")

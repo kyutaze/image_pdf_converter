@@ -1,5 +1,5 @@
 """
-This python script creates a PDF from images.
+画像ファイルからPDFファイルを作成するスクリプト
 
 dependencies:
     uv add img2pdf
@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 import img2pdf
 
-# log settings
+# ログ設定
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
@@ -20,57 +20,57 @@ logger = logging.getLogger(__name__)
 
 def create_pdf_from_images(image_folder: Path, output_pdf_path: Path, dpi: int = 72):
     if not image_folder.is_dir():
-        logger.error(f"Input directory not found: {image_folder}")
+        logger.error(f"入力ディレクトリが見つかりません: {image_folder}")
         return
 
-    # Gather all JPG/JPEG files
+    # すべてのJPG/JPEGファイルを取得
     image_files = []
     for filepath in image_folder.iterdir():
         if filepath.is_file() and filepath.suffix.lower() in (".jpg", ".jpeg"):
             image_files.append(filepath)
 
-    # Sort files lexicographically based on their stem (name without extension)
+    # ファイル名（拡張子なし）に基づいて辞書順にソート
     image_files.sort(key=lambda f: f.stem)
 
     if not image_files:
-        logger.warning(f"No JPEG images found in {image_folder}")
+        logger.warning(f"{image_folder} 内にJPEG画像が見つかりません")
         return
 
-    # Ensure the output directory exists
+    # 出力ディレクトリが存在することを確認
     try:
         output_pdf_path.parent.mkdir(parents=True, exist_ok=True)
     except OSError as e:
-        logger.error(f"Error creating output directory {output_pdf_path.parent}: {e}")
+        logger.error(f"出力ディレクトリ {output_pdf_path.parent} の作成中にエラーが発生しました: {e}")
         return
 
-    # Convert images to PDF
-    logger.info(f"Converting {len(image_files)} images to PDF using DPI={dpi}...")
+    # 画像をPDFに変換
+    logger.info(f"DPI={dpi} を使用して {len(image_files)} 枚の画像をPDFに変換中...")
     try:
-        # img2pdf.convert expects a list of filenames (strings) or binary data
-        # layout_fun is used to force a specific DPI, ignoring the image's internal DPI
+        # img2pdf.convert はファイル名のリスト（文字列）またはバイナリデータを想定
+        # layout_fun を使用して、画像の内部DPIを無視し、特定のDPIを強制する
         layout_function = img2pdf.get_fixed_dpi_layout_fun((dpi, dpi))
         pdf_bytes = img2pdf.convert([str(p) for p in image_files], layout_fun=layout_function)
         
         with open(output_pdf_path, "wb") as f:
             f.write(pdf_bytes)
             
-        logger.info(f"Successfully created PDF: {output_pdf_path}")
+        logger.info(f"PDFを正常に作成しました: {output_pdf_path}")
     except Exception as e:
-        logger.error(f"Error creating PDF: {e}")
+        logger.error(f"PDF作成中にエラーが発生しました: {e}")
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Create a PDF from images (lossless).",
+        description="画像ファイルからPDFファイルを作成するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
     )
-    parser.add_argument("-i", "--input-dir", type=Path, required=True, help="Directory containing the image files.")
-    parser.add_argument("--dpi", type=int, default=72, help="DPI to use for the PDF (default: 72).")
+    parser.add_argument("-i", "--input-dir", type=Path, required=True, help="画像ファイルを含むディレクトリ。")
+    parser.add_argument("--dpi", type=int, default=72, help="PDFに使用するDPI（デフォルト: 72）。")
     args = parser.parse_args()
 
-    # Determine output path based on input directory
-    # Output directory is the parent of the input directory
-    # Filename is the directory name + .pdf
+    # 入力ディレクトリに基づいて出力パスを決定
+    # 出力ディレクトリは入力ディレクトリの親
+    # ファイル名はディレクトリ名 + .pdf
     input_dir = args.input_dir.resolve()
     output_dir = input_dir.parent
     output_pdf_name = f"{input_dir.name}.pdf"

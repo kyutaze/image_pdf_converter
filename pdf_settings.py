@@ -1,5 +1,5 @@
 """
-PDFのページレイアウトや綴じ方向などの表示設定を変更するスクリプト。
+PDFのページレイアウトや綴じ方向などの表示設定を変更するスクリプト
 
 dependencies:
     uv add pikepdf
@@ -55,7 +55,7 @@ def set_pdf_settings(pdf_path: Path, layout: str, direction: str):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="PDFの表示設定（レイアウトおよび綴じ方向）を構成します。",
+        description="PDFのページレイアウトや綴じ方向などの表示設定を変更するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
     )
     # -p / --pdf

@@ -1,3 +1,6 @@
+"""
+EPUBファイル（固定レイアウト）から画像を抽出して連番で保存するスクリプト
+"""
 import argparse
 import logging
 import zipfile
@@ -29,11 +32,11 @@ def parse_args():
     コマンドライン引数を解析する。
     """
     parser = argparse.ArgumentParser(
-        description="EPUBファイル（固定レイアウト）から画像を抽出し、連番で保存するスクリプト",
+        description="EPUBファイル（固定レイアウト）から画像を抽出して連番で保存するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
         )
-    parser.add_argument("-i", "--input-epub", required=True, type=Path, help="画像抽出の対象となるEPUBファイルのパス")
-    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする")
+    parser.add_argument("-i", "--input-epub", required=True, type=Path, help="画像抽出の対象となるEPUBファイルのパス。")
+    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする。")
     return parser.parse_args()
 
 

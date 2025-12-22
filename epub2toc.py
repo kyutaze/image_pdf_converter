@@ -1,3 +1,6 @@
+"""
+EPUBファイルから目次を抽出してCSVに出力するスクリプト
+"""
 import argparse
 import csv
 import logging
@@ -162,8 +165,8 @@ def main():
         description="EPUBファイルから目次を抽出してCSVに出力するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
         )
-    parser.add_argument("--input-epub", required=True, help="目次抽出の対象となるEPUBファイルのパス")
-    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする")
+    parser.add_argument("--input-epub", required=True, help="目次抽出の対象となるEPUBファイルのパス。")
+    parser.add_argument("--skip-cover", action="store_true", help="表紙（1ページ目）をスキップする。")
     args = parser.parse_args()
 
     input_epub_path = Path(args.input_epub)

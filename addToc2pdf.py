@@ -1,5 +1,5 @@
 """
-PDFファイルに目次を設定するPythonスクリプト。
+PDFファイルに目次を設定するスクリプト
 
 dependencies:
     uv add pymupdf
