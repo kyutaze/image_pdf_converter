@@ -198,7 +198,7 @@ def main():
             toc_data = parse_ncx(zip_ref, ncx_path, href_to_seq)
 
             # 4. CSVファイルへの出力
-            output_csv_path = input_epub_path.parent / (input_epub_path.stem + "_toc.txt")
+            output_csv_path = input_epub_path.parent / (input_epub_path.stem + "_toc.csv")
             
             logger.info(f"CSVファイルを出力します: {output_csv_path}")
             

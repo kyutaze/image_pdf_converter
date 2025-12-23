@@ -23,16 +23,16 @@ uv sync
 # example.epubから画像ファイルを抽出してexampleフォルダに保存する。
 uv run epub2img.py --input-epub "C:\Users\foo\hoge\example.epub"
 
-# example.epubから目次を抽出してexample.csvに出力する。
+# example.epubから目次を抽出してexample_toc.csvに出力する。
 uv run epub2toc.py --input-epub "C:\Users\foo\hoge\example.epub"
 
 # exampleフォルダの画像ファイルからexample.pdfを作成する。
 uv run images2pdf.py --input-dir "C:\Users\foo\hoge\example"
 
-# example.pdfに目次（example.csv）を設定する。
-uv run addToc2pdf.py --pdf "C:\Users\foo\hoge\example.pdf" --toc "C:\Users\foo\hoge\example_toc.txt"
+# example.pdfに目次（example_toc.csv）を設定する。
+uv run addToc2pdf.py --pdf "C:\Users\foo\hoge\example.pdf" --toc "C:\Users\foo\hoge\example_toc.csv"
 
-# example.pdfに右綴じを設定する。
+# example.pdfを右綴じに設定する。
 uv run pdf_settings.py --pdf "C:\Users\foo\hoge\example.pdf" --direction /R2L
 ```
 
@@ -43,7 +43,6 @@ $path = "C:\Users\foo\hoge\example.epub"
 uv run epub2img.py --input-epub "$path"
 uv run epub2toc.py --input-epub "$path"
 uv run images2pdf.py --input-dir ([System.IO.Path]::ChangeExtension($path, $null))
-uv run addToc2pdf.py --pdf ([System.IO.Path]::ChangeExtension($path, ".pdf")) --toc (Join-Path ([System.IO.Path]::GetDirectoryName($path)) (([System.IO.Path]::GetFileNameWithoutExtension($path) + "_toc") + ".txt"))
+uv run addToc2pdf.py --pdf ([System.IO.Path]::ChangeExtension($path, ".pdf")) --toc (Join-Path ([System.IO.Path]::GetDirectoryName($path)) (([System.IO.Path]::GetFileNameWithoutExtension($path) + "_toc") + ".csv"))
 uv run pdf_settings.py --pdf ([System.IO.Path]::ChangeExtension($path, ".pdf")) --direction /R2L
-
 ```
