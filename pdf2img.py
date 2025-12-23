@@ -1,5 +1,5 @@
 """
-PDFファイルから画像を抽出して連番で保存するスクリプト
+PDFファイルから画像を抽出してページ順に連番で保存するスクリプト
 
 dependencies:
     uv add PyMuPDF
@@ -82,7 +82,7 @@ def main():
     """
 
     parser = argparse.ArgumentParser(
-        description="PDFファイルから画像を抽出して連番で保存するスクリプト",
+        description="PDFファイルから画像を抽出してページ順に連番で保存するスクリプト",
         formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("-i", "--input-pdf", type=Path, required=True, help="画像抽出の対象となるPDFファイルのパス。")
